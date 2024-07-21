@@ -1,3 +1,3 @@
 export type PluginStorage = {
-  count: number;
+  notes: { datetime: string; note: string; projectName?: string }[];
 }
