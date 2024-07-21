@@ -1,18 +1,18 @@
 {
-  "id": "starterkit-plugin",
-  "name": "StarterKit Plugin",
+  "id": "notebook",
+  "name": "Notebook",
   "version": "0.1.0",
-  "description": "This is a starterkit plugin",
+  "description": "Note taking plugin.",
   "author": {
-    "name": "Caido Labs Inc.",
-    "email": "dev@caido.io",
-    "url": "https://github.com/caido/starterkit-plugin"
+    "name": "Ninjeeter",
+    "email": "ninjeeter@proton.me",
+    "url": "https://github.com/ninjeeter/notebook"
   },
   "plugins": [
     {
       "kind": "frontend",
-      "id": "caido-extra-commands",
-      "name": "Extra Commands",
+      "id": "notebook",
+      "name": "Notebook",
       "entrypoint": "frontend/script.js",
       "style": "frontend/style.css"
     }
