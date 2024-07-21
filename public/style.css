@@ -6,6 +6,12 @@
   width: 100%;
 }
 
+/* Allow user to select text */
+#notesTable td {
+  user-select: auto;
+  -webkit-user-select: auto;
+}
+
 #notesTable td:nth-child(1) {
   width: 200px;
   white-space: pre-wrap;
