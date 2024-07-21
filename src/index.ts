@@ -95,6 +95,7 @@ const addPage = (caido: Caido) => {
   1. Supply input in the textarea located at the bottom and click the <span class="light-brown">Add Note</span> button.<br>
   2. Click the <span class="light-brown">>_ Commands</span> button located at the topbar in the upper-right corner. Search/Select <span class="light-brown">Add Note to Notebook</span>. Supply input in the prompt and click <span class="light-light-brown">OK</span>.<br>
   3. Highlight select text within a request/response pane and open the context menu by right-clicking. Hover over the <span class="light-brown">Plugins</span> item and select <span class="light-light-brown">Add Note to Notebook</span>.<br>
+  4. <span class="light-brown">CTRL+C</span> and <span class="light-brown">CTRL+V</span> within request and response panes is available as well but <span class="red">ensure to deselect the text and unfocus the pane to avoid needing to restart the Caido application.</span><br>
   <br>
   <span class="bold-brown">To clear all notes:</span><br>
   <span class="bold-red">***This will reset the notes in storage. This action cannot be undone.***</span><br>
