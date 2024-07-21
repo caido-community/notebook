@@ -4,11 +4,6 @@
 
 #notesTable {
   width: 100%;
-  -moz-user-select: text;
-  -khtml-user-select: text;
-  -webkit-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
 }
 
 #notesTable td:nth-child(1) {
