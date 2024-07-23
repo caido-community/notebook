@@ -1,11 +1,14 @@
+// Imports.
 import type { Caido } from "@caido/sdk-frontend";
 
 import type { PluginStorage } from "./types";
 
+// Creates path.
 const Page = "/notebook";
+// Syntax of - identifier: "namespace.namespaceIdentifier".
 const Commands = {
   clear: "notebook.clear",
-  addNoteMenu: "notebook.addNoteMenu"
+  addNoteMenu: "notebook.addNoteMenu",
 };
 
 // Get notes from storage.
@@ -16,22 +19,26 @@ const getNotes = (caido: Caido): PluginStorage["notes"] => {
     return [...storage.notes];
   }
   return [];
-}
+};
 
 // Add note to storage.
-const addNoteStorage = (caido: Caido, datetime: string, note: string, projectName?: string) => {
+const addNoteStorage = (
+  caido: Caido,
+  datetime: string,
+  note: string,
+  projectName?: string
+) => {
   let storage = caido.storage.get() as PluginStorage | undefined;
   if (!storage) {
     storage = { notes: [] };
   }
-  
+
   const updatedNotes = [...storage.notes, { datetime, note, projectName }];
   caido.storage.set({ ...storage, notes: updatedNotes });
 
   // Print added note to console.
   console.log("Added Note:", { datetime, note, projectName });
 };
-
 
 // Global scope table.
 const table = document.createElement("table");
@@ -46,7 +53,7 @@ const clear = (caido: Caido) => {
     }
   }
   caido.storage.set({ notes: [] });
-}
+};
 
 // Add note via prompt or highlight selecting text and selecting context menu option.
 const addNoteMenu = async (caido: Caido) => {
@@ -60,14 +67,14 @@ const addNoteMenu = async (caido: Caido) => {
     const project = await caido.graphql.currentProject();
     const projectData = project?.currentProject;
     if (projectData) {
-      const projectName = projectData.name || 'No Project Selected';
+      const projectName = projectData.name || "No Project Selected";
       const datetime = new Date().toLocaleString();
       const row = table.insertRow();
       const datetimeCell = row.insertCell();
       const inputCell = row.insertCell();
 
       datetimeCell.textContent = `${datetime} Project: ${projectName}`;
-      datetimeCell.classList.add('datetime-cell');
+      datetimeCell.classList.add("datetime-cell");
       inputCell.textContent = currentSelect;
 
       // Add the note to storage.
@@ -99,7 +106,7 @@ const addPage = (caido: Caido) => {
   <br>
   <span class="bold-brown">To clear all notes:</span><br>
   <span class="bold-red">***This will reset the notes in storage. This action cannot be undone.***</span><br>
-  1. Click the <span class="light-brown">>_ Commands</span> button located at the topbar in the upper-right corner. Search/Select <span class="light-brown">Clear Notes in Notebook</span>.`
+  1. Click the <span class="light-brown">>_ Commands</span> button located at the topbar in the upper-right corner. Search/Select <span class="light-brown">Clear Notes in Notebook</span>.`;
   instructions.className = "center";
 
   details.appendChild(instructions);
@@ -112,7 +119,7 @@ const addPage = (caido: Caido) => {
   // `Add note.` button.
   const addNoteButton = caido.ui.button({
     variant: "primary",
-    label: "Add Note"
+    label: "Add Note",
   });
 
   addNoteButton.addEventListener("click", async () => {
@@ -122,13 +129,13 @@ const addPage = (caido: Caido) => {
     if (inputValue) {
       const project = await caido.graphql.currentProject();
       const projectData = project?.currentProject;
-      const projectName = projectData?.name || 'No Project Selected';
+      const projectName = projectData?.name || "No Project Selected";
       const row = table.insertRow();
       const datetimeCell = row.insertCell();
       const inputCell = row.insertCell();
 
       datetimeCell.textContent = `${datetime} Project: ${projectName}`;
-      datetimeCell.classList.add('datetime-cell');
+      datetimeCell.classList.add("datetime-cell");
       inputCell.textContent = inputValue;
 
       // Add the note to storage.
@@ -152,18 +159,17 @@ const addPage = (caido: Caido) => {
 
   const buttonContainer = document.createElement("div");
   buttonContainer.appendChild(addNoteButton);
-  buttonContainer.classList.add("button-container")
+  buttonContainer.classList.add("button-container");
 
   const footerContainer = document.createElement("div");
   footerContainer.appendChild(textarea);
   footerContainer.appendChild(buttonContainer);
 
-
   // Card elements.
   const card = caido.ui.card({
     header: headerContainer,
     body: tableContainer,
-    footer: footerContainer
+    footer: footerContainer,
   });
 
   // Create plugin page in left tab menu.
@@ -180,15 +186,15 @@ export const init = (caido: Caido) => {
   // Populate table with stored notes.
   if (notes && notes.length > 0) {
     notes.forEach((note) => {
-      const row = table.insertRow();;
+      const row = table.insertRow();
       const datetimeCell = row.insertCell();
       const noteCell = row.insertCell();
-          
+
       datetimeCell.textContent = `${note.datetime} Project: ${note.projectName}`;
-      datetimeCell.classList.add('datetime-cell');
+      datetimeCell.classList.add("datetime-cell");
       noteCell.textContent = note.note;
-      });
-    }
+    });
+  }
 
   // Register commands.
   // Commands are registered with a unique identifier and a handler function.
@@ -213,13 +219,13 @@ export const init = (caido: Caido) => {
   caido.menu.registerItem({
     type: "Request",
     commandId: Commands.addNoteMenu,
-    leadingIcon: "fas fa-book"
+    leadingIcon: "fas fa-book",
   });
 
   caido.menu.registerItem({
     type: "Response",
     commandId: Commands.addNoteMenu,
-    leadingIcon: "fas fa-book"
+    leadingIcon: "fas fa-book",
   });
 
   // Register page.
