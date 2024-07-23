@@ -18,13 +18,9 @@
   <hr />
 </div>
 
-# 🔰 StarterKit Plugin
+# Notebook
 
-This is the starter kit for the Caido plugin system.
-
-For now it only supports Frontend plugins.
-
-It is very early so expect a lot of improvements over the next months.
+A note taking plugin for Caido.
 
 ## 🏎️ Usage
 
