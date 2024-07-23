@@ -14,27 +14,19 @@ const Commands = {
 // Get notes from storage.
 const getNotes = (caido: Caido): PluginStorage["notes"] => {
   const storage = caido.storage.get() as PluginStorage | undefined;
-  if (storage && storage.notes) {
-    console.log("Retrieved notes from storage: ", storage.notes);
-    return [...storage.notes];
-  }
-  return [];
+  return storage?.notes ?? [];
 };
 
 // Add note to storage.
-const addNoteStorage = (
+const addNoteStorage = async (
   caido: Caido,
   datetime: string,
   note: string,
-  projectName?: string
+  projectName?: string,
 ) => {
-  let storage = caido.storage.get() as PluginStorage | undefined;
-  if (!storage) {
-    storage = { notes: [] };
-  }
-
-  const updatedNotes = [...storage.notes, { datetime, note, projectName }];
-  caido.storage.set({ ...storage, notes: updatedNotes });
+  const currentNotes = getNotes(caido);
+  const updatedNotes = [...currentNotes, { datetime, note, projectName }];
+  await caido.storage.set({ notes: updatedNotes });
 
   // Print added note to console.
   console.log("Added Note:", { datetime, note, projectName });
@@ -69,16 +61,9 @@ const addNoteMenu = async (caido: Caido) => {
     if (projectData) {
       const projectName = projectData.name || "No Project Selected";
       const datetime = new Date().toLocaleString();
-      const row = table.insertRow();
-      const datetimeCell = row.insertCell();
-      const inputCell = row.insertCell();
-
-      datetimeCell.textContent = `${datetime} Project: ${projectName}`;
-      datetimeCell.classList.add("datetime-cell");
-      inputCell.textContent = currentSelect;
 
       // Add the note to storage.
-      addNoteStorage(caido, datetime, currentSelect, projectName);
+      await addNoteStorage(caido, datetime, currentSelect, projectName);
     }
   }
 };
@@ -130,16 +115,9 @@ const addPage = (caido: Caido) => {
       const project = await caido.graphql.currentProject();
       const projectData = project?.currentProject;
       const projectName = projectData?.name || "No Project Selected";
-      const row = table.insertRow();
-      const datetimeCell = row.insertCell();
-      const inputCell = row.insertCell();
-
-      datetimeCell.textContent = `${datetime} Project: ${projectName}`;
-      datetimeCell.classList.add("datetime-cell");
-      inputCell.textContent = inputValue;
 
       // Add the note to storage.
-      addNoteStorage(caido, datetime, inputValue, projectName);
+      await addNoteStorage(caido, datetime, inputValue, projectName);
 
       // Clear textarea and reset value.
       inputValue = "";
@@ -178,23 +156,38 @@ const addPage = (caido: Caido) => {
   });
 };
 
+const displayNotes = (notes: PluginStorage["notes"] | undefined) => {
+  const tbody = table.querySelector("tbody");
+  if (tbody) {
+    table.textContent = "";
+  }
+
+  if (!notes) {
+    return;
+  }
+
+  notes.forEach((note) => {
+    const row = table.insertRow();
+    const datetimeCell = row.insertCell();
+    const noteCell = row.insertCell();
+
+    datetimeCell.textContent = `${note.datetime} Project: ${note.projectName}`;
+    datetimeCell.classList.add("datetime-cell");
+    noteCell.textContent = note.note;
+  });
+};
+
 export const init = (caido: Caido) => {
   // Retrieve notes from storage
   const notes = getNotes(caido);
   console.log("Current notes:", notes);
 
   // Populate table with stored notes.
-  if (notes && notes.length > 0) {
-    notes.forEach((note) => {
-      const row = table.insertRow();
-      const datetimeCell = row.insertCell();
-      const noteCell = row.insertCell();
+  displayNotes(notes);
 
-      datetimeCell.textContent = `${note.datetime} Project: ${note.projectName}`;
-      datetimeCell.classList.add("datetime-cell");
-      noteCell.textContent = note.note;
-    });
-  }
+  caido.storage.onChange((value) => {
+    displayNotes((value as PluginStorage | undefined)?.notes);
+  });
 
   // Register commands.
   // Commands are registered with a unique identifier and a handler function.
