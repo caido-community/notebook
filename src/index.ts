@@ -14,11 +14,7 @@ const Commands = {
 // Get notes from storage.
 const getNotes = (caido: Caido): PluginStorage["notes"] => {
   const storage = caido.storage.get() as PluginStorage | undefined;
-  if (storage && storage.notes) {
-    console.log("Retrieved notes from storage: ", storage.notes);
-    return storage.notes;
-  }
-  return [];
+  return storage?.notes ?? [];
 };
 
 // Add note to storage.
@@ -28,8 +24,7 @@ const addNoteStorage = async (
   note: string,
   projectName?: string,
 ) => {
-  const storage = caido.storage.get() as PluginStorage | undefined;
-  const currentNotes = storage?.notes ?? [];
+  const currentNotes = getNotes(caido);
   const updatedNotes = [...currentNotes, { datetime, note, projectName }];
   await caido.storage.set({ notes: updatedNotes });
 
@@ -161,10 +156,14 @@ const addPage = (caido: Caido) => {
   });
 };
 
-const displayNotes = (notes: PluginStorage["notes"]) => {
+const displayNotes = (notes: PluginStorage["notes"] | undefined) => {
   const tbody = table.querySelector("tbody");
   if (tbody) {
     table.textContent = "";
+  }
+
+  if (!notes) {
+    return;
   }
 
   notes.forEach((note) => {
@@ -184,15 +183,10 @@ export const init = (caido: Caido) => {
   console.log("Current notes:", notes);
 
   // Populate table with stored notes.
-  if (notes) {
-    displayNotes(notes);
-  }
+  displayNotes(notes);
 
   caido.storage.onChange((value) => {
-    const notes = (value as PluginStorage | undefined)?.notes;
-    if (notes) {
-      displayNotes(notes);
-    }
+    displayNotes((value as PluginStorage | undefined)?.notes);
   });
 
   // Register commands.
