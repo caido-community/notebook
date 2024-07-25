@@ -156,7 +156,7 @@ const addPage = (caido: Caido) => {
   });
 };
 
-const displayNotes = (notes: PluginStorage["notes"] | undefined) => {
+const displayNotes = (caido: Caido, notes: PluginStorage["notes"] | undefined) => {
   const tbody = table.querySelector("tbody");
   if (tbody) {
     table.textContent = "";
@@ -166,14 +166,36 @@ const displayNotes = (notes: PluginStorage["notes"] | undefined) => {
     return;
   }
 
-  notes.forEach((note) => {
+  notes.forEach((note, index) => {
     const row = table.insertRow();
     const datetimeCell = row.insertCell();
     const noteCell = row.insertCell();
+    const removeCell = row.insertCell();
 
     datetimeCell.textContent = `${note.datetime} Project: ${note.projectName}`;
     datetimeCell.classList.add("datetime-cell");
     noteCell.textContent = note.note;
+
+    // `Remove note.` button.
+    const removeNoteButton = caido.ui.button({
+      variant: "primary",
+      label: "Delete",
+      trailingIcon: "fas fa-trash-can",
+      size: "small"
+    });
+  
+    removeNoteButton.addEventListener("click", async () => {
+      const currentNotes = getNotes(caido);
+      const indexToRemove = currentNotes.length - 1;
+  
+      if (indexToRemove !== -1) {
+        currentNotes.splice(indexToRemove, 1);
+        await caido.storage.set({ notes: currentNotes });
+
+        displayNotes(caido, currentNotes);
+      }
+  });
+  removeCell.appendChild(removeNoteButton);
   });
 };
 
@@ -183,10 +205,10 @@ export const init = (caido: Caido) => {
   console.log("Current notes:", notes);
 
   // Populate table with stored notes.
-  displayNotes(notes);
+  displayNotes(caido, notes);
 
   caido.storage.onChange((value) => {
-    displayNotes((value as PluginStorage | undefined)?.notes);
+    displayNotes(caido,(value as PluginStorage | undefined)?.notes);
   });
 
   // Register commands.

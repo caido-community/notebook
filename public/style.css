@@ -4,19 +4,21 @@
 
 #notesTable {
   width: 100%;
+  border-collapse: collapse;
 }
 
 /* Allow user to select text */
-#notesTable td {
-  user-select: auto;
-  -webkit-user-select: auto;
+#notesTable tbody {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 #notesTable td:nth-child(1) {
   width: 200px;
   white-space: pre-wrap;
   text-align: left;
-  padding: 8px;
+  border: 1px solid black;
+  padding: 5px;
 }
 
 #notesTable td:nth-child(2) {
@@ -24,6 +26,19 @@
   white-space: pre-line;
   word-wrap: break-word;
   text-align: left;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+#notesTable td:nth-child(3) {
+  width: 50px;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  vertical-align: top;
 }
 
 .text-area {
@@ -39,11 +54,6 @@
   overflow: auto;
   max-height: 100%;
   max-width: 100%;
-}
-
-.table-container table td {
-  border: 1px solid black;
-  padding: 5px;
 }
 
 .button-container {
