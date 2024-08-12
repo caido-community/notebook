@@ -4,21 +4,21 @@
 
 #notesTable {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* Ensures that table borders do not double up */
 }
 
 /* Allow user to select text */
-#notesTable tbody {
-  user-select: text;
-  -webkit-user-select: text;
+#notesTable td {
+  user-select: auto;
+  -webkit-user-select: auto;
 }
 
 #notesTable td:nth-child(1) {
   width: 200px;
   white-space: pre-wrap;
   text-align: left;
-  border: 1px solid black;
-  padding: 5px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 #notesTable td:nth-child(2) {
@@ -26,41 +26,63 @@
   white-space: pre-line;
   word-wrap: break-word;
   text-align: left;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  border-left: 1px solid black;
-  padding-right: 5px;
-  padding-left: 5px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 #notesTable td:nth-child(3) {
-  width: 50px;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
-  border-top: 1px solid black;
-  vertical-align: top;
+  width: 250px;
+  white-space: pre-wrap;
+  text-align: left;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
+/* Style for the textareas in the third column */
 .text-area {
   width: 100%;
   resize: none;
+  box-sizing: border-box;
 }
 
-.center {
-  text-align: center;
+.text-area-edit {
+  width: 100%;
+  resize: vertical;
+  overflow: auto;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
+/* Additional styling for textarea in table */
+.comment-text-area {
+  border: 1px solid #ccc;
+  padding: 4px;
+  border-radius: 4px;
+  min-width: 230px;
+  min-height: 75px;
+  color: goldenrod;
+}
+
+/* General table styling */
 .table-container {
   overflow: auto;
   max-height: 100%;
   max-width: 100%;
 }
 
+.table-container table td {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+/* Button container styling */
 .button-container {
   display: flex;
   justify-content: space-between;
 }
 
+/* Text and color styling */
 .bold-brown {
   font-weight: bold;
   color: #b49566;
@@ -82,4 +104,9 @@
 .datetime-cell {
   vertical-align: top;
   color: #d1bfa5;
+}
+
+/* Center align utility */
+.center {
+  text-align: center;
 }

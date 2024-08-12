@@ -23,9 +23,10 @@ const addNoteStorage = async (
   datetime: string,
   note: string,
   projectName?: string,
+  comment?: string,
 ) => {
   const currentNotes = getNotes(caido);
-  const updatedNotes = [...currentNotes, { datetime, note, projectName }];
+  const updatedNotes = [...currentNotes, { datetime, note, projectName, comment: "" }];
   await caido.storage.set({ notes: updatedNotes });
 
   // Print added note to console.
@@ -64,6 +65,8 @@ const addNoteMenu = async (caido: Caido) => {
 
       // Add the note to storage.
       await addNoteStorage(caido, datetime, currentSelect, projectName);
+
+      caido.window.showToast(`${currentSelect} added to Notebook.`, {variant: "info", duration: 5000})
     }
   }
 };
@@ -85,9 +88,17 @@ const addPage = (caido: Caido) => {
   const instructions = document.createElement("p");
   instructions.innerHTML = `<span class="bold-brown">To add a note:</span><br>
   1. Supply input in the textarea located at the bottom and click the <span class="light-brown">Add Note</span> button.<br>
-  2. Click the <span class="light-brown">>_ Commands</span> button located at the topbar in the upper-right corner. Search/Select <span class="light-brown">Add Note to Notebook</span>. Supply input in the prompt and click <span class="light-brown">OK</span>.<br>
+  2. Highlight select text within a request/response pane and click the <span class="light-brown">>_ Commands</span> button located at the topbar in the upper-right corner. Search/Select <span class="light-brown">Add Note to Notebook</span>.<br>
   3. Highlight select text within a request/response pane and open the context menu by right-clicking. Hover over the <span class="light-brown">Plugins</span> item and select <span class="light-brown">Add Note to Notebook</span>.<br>
-  4. <span class="light-brown">CTRL+C</span> and <span class="light-brown">CTRL+V</span> within request and response panes is available as well but <span class="red">ensure to deselect the text and unfocus the pane to avoid needing to restart the Caido application.</span><br>***Copying within panes using <span class="light-brown">Copy</span> from the right-click context menu is functional as normal.***<br>
+  4. <span class="light-brown">CTRL+C</span> within request and response panes and <span class="light-brown">CTRL+V</span> into the textarea.<br>
+  <br>
+  <span class="bold-brown">To edit a note:</span><br>
+  1. Click inside the note column.<br>
+  2. Unfocus once done.<br>
+  <br>
+  <span class="bold-brown">To add a comment:</span><br>
+  1. Supply input in the textarea in the third column.<br>
+  2. Unfocus once done.<br>
   <br>
   <span class="bold-brown">To clear all notes:</span><br>
   <span class="bold-red">***This will reset the notes in storage. This action cannot be undone.***</span><br>
@@ -170,33 +181,74 @@ const displayNotes = (caido: Caido, notes: PluginStorage["notes"] | undefined) =
     const row = table.insertRow();
     const datetimeCell = row.insertCell();
     const noteCell = row.insertCell();
-    const removeCell = row.insertCell();
+    const commentCell = row.insertCell(); // New cell for comments
 
-    datetimeCell.textContent = `${note.datetime} Project: ${note.projectName}`;
-    datetimeCell.classList.add("datetime-cell");
-    noteCell.textContent = note.note;
+    // Create container for datetime text and delete button
+    const datetimeContainer = document.createElement("div");
+    datetimeContainer.classList.add("datetime-container");
 
-    // `Remove note.` button.
+    // DateTime text
+    const datetimeText = document.createElement("span");
+    datetimeText.textContent = `${note.datetime} Project: ${note.projectName}`;
+    datetimeText.classList.add("datetime-text");
+
+    // `Remove note.` button
     const removeNoteButton = caido.ui.button({
       variant: "primary",
       label: "Delete",
       trailingIcon: "fas fa-trash-can",
       size: "small"
     });
-  
+
     removeNoteButton.addEventListener("click", async () => {
       const currentNotes = getNotes(caido);
-      const indexToRemove = currentNotes.length - 1;
-  
-      if (indexToRemove !== -1) {
-        currentNotes.splice(indexToRemove, 1);
-        await caido.storage.set({ notes: currentNotes });
+      const updatedNotes = currentNotes.filter((_, i) => i !== index);
 
-        displayNotes(caido, currentNotes);
-      }
-  });
-  removeCell.appendChild(removeNoteButton);
-  });
+      await caido.storage.set({ notes: updatedNotes });
+      displayNotes(caido, updatedNotes);
+    });
+
+    // Append text and button to container
+    datetimeContainer.appendChild(datetimeText);
+    datetimeContainer.appendChild(removeNoteButton);
+
+    // Add container to datetime cell
+    datetimeCell.appendChild(datetimeContainer);
+    datetimeCell.classList.add("datetime-cell");
+
+    // Editable div for note
+    const editableNote = document.createElement("div");
+    editableNote.contentEditable = "true";
+    editableNote.spellcheck = false;
+    editableNote.textContent = note.note;
+    editableNote.classList.add("text-area-edit");
+
+    editableNote.addEventListener("blur", async () => {
+      // Update the note in storage when editing is finished
+      const updatedNotes = [...notes];
+      updatedNotes[index].note = editableNote.textContent || "";
+      await caido.storage.set({ notes: updatedNotes });
+      displayNotes(caido, updatedNotes);
+    });
+
+    noteCell.appendChild(editableNote);
+
+    // Create textarea for comments
+    const commentTextarea = document.createElement("textarea");
+    commentTextarea.placeholder = "Add your comments here...";
+    commentTextarea.value = note.comment || ""; // Use existing comment if present
+    commentTextarea.classList.add("comment-text-area");
+
+    commentTextarea.addEventListener("blur", async () => {
+      // Update the comment in storage when editing is finished
+      const updatedNotes = [...notes];
+      updatedNotes[index].comment = commentTextarea.value;
+      await caido.storage.set({ notes: updatedNotes });
+      displayNotes(caido, updatedNotes);
+    });
+
+    commentCell.appendChild(commentTextarea);
+  })
 };
 
 export const init = (caido: Caido) => {
