@@ -30,8 +30,6 @@ If you are looking for the version of the **Notebook** plugin created in the [do
 2. In your Caido instance, navigate to the `Plugins` page, click `Install Package` and select the downloaded `notebook_v1.0.0.zip` package.
 3. Done! 🎉
 
----
-
 ## Installation: Latest
 
 For **Notebook** with additional features:
@@ -39,8 +37,6 @@ For **Notebook** with additional features:
 1. Go to the [Notebook Releases tab](https://github.com/caido-community/notebook/releases) and download the latest release.
 2. In your Caido instance, navigate to the `Plugins` page, click `Install Package` and select the downloaded package.
 3. Done! 🎉
-
----
 
 ## Instructions
 
