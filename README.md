@@ -18,9 +18,25 @@
   <hr />
 </div>
 
-# Notebook
+# Notebook [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/cloudposse.svg?style=social&label=Follow%20Me)](https://twitter.com/ninjeeter)
 
 **Notebook** is a frontend note taking plugin for [Caido](https://github.com/caido).
+
+This plugin gives you the ability to consolidate your notes as you work directly within the Caido application.
+
+## Features/Abilities:
+
+- Notes can be added manually or via highlight selecting and using the context menu shortcut.
+- Easily send requests and responses to be added as note entries.
+- Note entries include date and time stamps.
+- If you were working within a Project when the note was added - the Project name will be included.
+- Note row panes can be expanded/condensed.
+- Add additional comments to the note entries - helpful for providing additional information on requests/responses.
+- Notes are available globally across all Projects.
+- Easily edit notes after they have been added.
+- Delete individual notes or clear the entire table at once.
+
+![image](https://raw.githubusercontent.com/caido-community/notebook/main/notebook_screenshot.png)
 
 ## Installation: Documentation Example
 
@@ -57,3 +73,7 @@ For **Notebook** with additional features:
 ### To clear all notes:
   ***This will reset the notes in storage. This action cannot be undone.***
   1. Click the `>_ Commands` button located at the topbar in the upper-right corner. Search/Select `Clear Notes in Notebook`.
+
+## Contribution
+
+If you'd like to request a feature, suggest an improvement or report a bug - please [create a Github Issue](https://github.com/caido-community/notebook/issues).
